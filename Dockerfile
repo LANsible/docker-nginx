@@ -17,34 +17,35 @@ RUN echo "nginx:x:101:nginx" > /etc_group
 # Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
-  # --without-select_module             disable select module
-  # --without-poll_module               disable poll module
-  # --without-select_module             disable select module
-  # --without-http_charset_module       disable ngx_http_charset_module
-  # --without-http_ssi_module           disable ngx_http_ssi_module
-  # --without-http_userid_module        disable ngx_http_userid_module
-  # --without-http_access_module        disable ngx_http_access_module
-  # --without-http_auth_basic_module    disable ngx_http_auth_basic_module
-  # --without-http_mirror_module        disable ngx_http_mirror_module
-  # --without-http_autoindex_module     disable ngx_http_autoindex_module
-  # --without-http_geo_module           disable ngx_http_geo_module
-  # --without-http_map_module           disable ngx_http_map_module
-  # --without-http_split_clients_module disable ngx_http_split_clients_module
-  # --without-http_referer_module       disable ngx_http_referer_module
-  # --without-http_proxy_module         disable ngx_http_proxy_module
-  # --without-http_scgi_module          disable ngx_http_scgi_module
-  # --without-http_memcached_module     disable ngx_http_memcached_module
-  # --without-http_limit_conn_module    disable ngx_http_limit_conn_module
-  # --without-http_limit_req_module     disable ngx_http_limit_req_module
-  # --without-http_empty_gif_module     disable ngx_http_empty_gif_module
-  # --without-http_browser_module       disable ngx_http_browser_module
-  # --without-http_upstream_hash_module   disable ngx_http_upstream_hash_module
+  # Also does not enable httpv2 since the ingress handles TLS termination
+  # --without-select_module                   disable select module
+  # --without-poll_module                     disable poll module
+  # --without-select_module                   disable select module
+  # --without-http_charset_module             disable ngx_http_charset_module
+  # --without-http_ssi_module                 disable ngx_http_ssi_module
+  # --without-http_userid_module              disable ngx_http_userid_module
+  # --without-http_access_module              disable ngx_http_access_module
+  # --without-http_auth_basic_module          disable ngx_http_auth_basic_module
+  # --without-http_mirror_module              disable ngx_http_mirror_module
+  # --without-http_autoindex_module           disable ngx_http_autoindex_module
+  # --without-http_geo_module                 disable ngx_http_geo_module
+  # --without-http_map_module                 disable ngx_http_map_module
+  # --without-http_split_clients_module       disable ngx_http_split_clients_module
+  # --without-http_referer_module             disable ngx_http_referer_module
+  # --without-http_proxy_module               disable ngx_http_proxy_module
+  # --without-http_scgi_module                disable ngx_http_scgi_module
+  # --without-http_memcached_module           disable ngx_http_memcached_module
+  # --without-http_limit_conn_module          disable ngx_http_limit_conn_module
+  # --without-http_limit_req_module           disable ngx_http_limit_req_module
+  # --without-http_empty_gif_module           disable ngx_http_empty_gif_module
+  # --without-http_browser_module             disable ngx_http_browser_module
+  # --without-http_upstream_hash_module       disable ngx_http_upstream_hash_module
   # --without-http_upstream_ip_hash_module    disable ngx_http_upstream_ip_hash_module
   # --without-http_upstream_least_conn_module disable ngx_http_upstream_least_conn_module
-  # --without-http_upstream_random_module    disable ngx_http_upstream_random_module
-  # --without-http_upstream_keepalive_module disable ngx_http_upstream_keepalive_module
-  # --without-http_upstream_zone_module      disable ngx_http_upstream_zone_module
-  #  --with-http_gzip_static_module     enable ngx_http_gzip_static_module
+  # --without-http_upstream_random_module     disable ngx_http_upstream_random_module
+  # --without-http_upstream_keepalive_module  disable ngx_http_upstream_keepalive_module
+  # --without-http_upstream_zone_module       disable ngx_http_upstream_zone_module
+  #  --with-http_gzip_static_module           enable ngx_http_gzip_static_module
   CONFIG='\
       --prefix=/etc/nginx \
       --sbin-path=/usr/sbin/nginx \
@@ -62,7 +63,6 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --http-log-path=/dev/stdout \
       --with-threads \
       --with-file-aio \
-      --with-http_v2_module \
       --with-stream \
       --without-select_module \
       --without-poll_module \
@@ -118,9 +118,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   && mkdir /etc/nginx/conf.d/ \
   && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
   && strip /usr/sbin/nginx* \
-  # without: 2.0M
-  # upx: 853.8K
-  # upx --best: 842.5K
+  # without: 1.8M
+  # upx: 809.3K
+  # upx --best: 798.2K
   # upx --brute: breaks the binary
   && upx --best /usr/sbin/nginx \
   # Bring in tzdata so users could set the timezones through the environment
