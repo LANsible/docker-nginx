@@ -22,17 +22,25 @@ Create a `server.conf` to expose your website:
 ```
 server {
   listen 8080 default_server;
-  server_name 0.0.0.0;
 
   root /var/www/html;
   index index.html index.htm;
 
   location / {
-      try_files $uri $uri/ =404;
+    try_files $uri $uri/ =404;
   }
+
+  # Needed otherwise redirects will get :8080 appended
+  port_in_redirect off;
 
   # Include cache expires
   include expires.conf;
+
+  # Enable looking for .gz files to serve directly instead of compressing at runtime
+  gzip_static on;
+
+  # Enable looking for .br files to serve directly instead of compressing at runtime
+  brotli_static on;
 }
 ```
 
