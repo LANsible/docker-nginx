@@ -1,7 +1,7 @@
 #######################################################################################################################
 # Scratch Nginx build
 #######################################################################################################################
-FROM alpine:3.12 as builder
+FROM alpine:3.13 as builder
 
 # See: https://github.com/nginx/nginx/releases
 # See: https://github.com/google/ngx_brotli/releases
