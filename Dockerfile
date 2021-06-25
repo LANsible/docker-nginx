@@ -1,11 +1,11 @@
 #######################################################################################################################
 # Scratch Nginx build
 #######################################################################################################################
-FROM alpine:3.13 as builder
+FROM alpine:3.14 as builder
 
 # See: https://github.com/nginx/nginx/releases
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.20.0 \
+ENV NGINX_VERSION=1.21.0 \
     NGX_BROTLI_VERSION=v1.0.0rc
 
 # Add unprivileged user
@@ -99,7 +99,6 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       zlib-static \
       zlib-dev \
       git \
-      upx \
   && curl -fSL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz \
   && mkdir -p /usr/src \
   && tar -zxC /usr/src -f nginx.tar.gz \
@@ -116,15 +115,21 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   && rm -rf /etc/nginx/html/ \
   && mkdir /etc/nginx/conf.d/ \
   && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
-  && strip /usr/sbin/nginx* \
+  && strip /usr/sbin/nginx*
+
+  # 'Install' upx from image since upx isn't available for aarch64 from Alpine
+  COPY --from=lansible/upx /usr/bin/upx /usr/bin/upx
+  # Minify binaries
   # without: 1.8M
   # upx: 809.3K
   # upx --best: 798.2K
   # upx --brute: breaks the binary
-  && upx --best /usr/sbin/nginx \
+  RUN upx --best /usr/sbin/nginx && \
+      upx -t /usr/sbin/nginx
+
   # Bring in tzdata so users could set the timezones through the environment
   # variables
-  && apk add --no-cache tzdata \
+  RUN apk add --no-cache tzdata \
   && cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime \
   && echo "Europe/Amsterdam" >  /etc/timezone
 
