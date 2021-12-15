@@ -1,11 +1,11 @@
 #######################################################################################################################
 # Scratch Nginx build
 #######################################################################################################################
-FROM alpine:3.14 as builder
+FROM alpine:3.15 as builder
 
 # See: https://github.com/nginx/nginx/releases
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.21.0 \
+ENV NGINX_VERSION=1.21.4 \
     NGX_BROTLI_VERSION=v1.0.0rc
 
 # Add unprivileged user
