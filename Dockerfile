@@ -107,9 +107,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   && git submodule update --init \
   && cd /usr/src/nginx-${NGINX_VERSION} \
   && ./configure \
-      ${CONFIG} \
-      --with-cc-opt="-static -static-libgcc" \
-      --with-ld-opt="-static" \
+    ${CONFIG} \
+    --with-cc-opt="-static -static-libgcc -fstack-protector-strong -fpic -fpie -O3" \
+    --with-ld-opt="-static" \
   && make \
   && make install \
   && rm -rf /etc/nginx/html/ \
