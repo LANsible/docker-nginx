@@ -160,6 +160,7 @@ COPY conf/expires.conf /etc/nginx/expires.conf
 
 # Only run as non-privileged user 'nginx'
 USER nginx
-STOPSIGNAL SIGTERM
+# https://github.com/nginxinc/docker-nginx/issues/377
+STOPSIGNAL SIGQUIT
 ENTRYPOINT ["/usr/sbin/nginx"]
 CMD ["-g", "daemon off;"]
