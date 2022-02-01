@@ -46,59 +46,59 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   # --without-http_upstream_zone_module       disable ngx_http_upstream_zone_module
   #  --with-http_gzip_static_module           enable ngx_http_gzip_static_module
   CONFIG='\
-      --prefix=/etc/nginx \
-      --sbin-path=/usr/sbin/nginx \
-      --modules-path=/usr/lib/nginx/modules \
-      --conf-path=/etc/nginx/nginx.conf \
-      --pid-path=/dev/shm/nginx.pid \
-      --lock-path=/dev/shm/nginx.lock \
-      --http-client-body-temp-path=/dev/shm/client_temp \
-      --http-proxy-temp-path=/dev/shm/proxy_temp \
-      --http-fastcgi-temp-path=/dev/shm/fastcgi_temp \
-      --http-uwsgi-temp-path=/dev/shm/uwsgi_temp \
-      --user=nginx \
-      --group=nginx \
-      --error-log-path=/dev/stderr \
-      --http-log-path=/dev/stdout \
-      --with-threads \
-      --with-file-aio \
-      --with-stream \
-      --without-select_module \
-      --without-poll_module \
-      --without-http_charset_module \
-      --without-http_ssi_module \
-      --without-http_userid_module \
-      --without-http_access_module \
-      --without-http_auth_basic_module \
-      --without-http_mirror_module \
-      --without-http_autoindex_module \
-      --without-http_geo_module \
-      --without-http_map_module \
-      --without-http_split_clients_module \
-      --without-http_referer_module \
-      --without-http_scgi_module \
-      --without-http_memcached_module \
-      --without-http_limit_conn_module \
-      --without-http_limit_req_module \
-      --without-http_empty_gif_module \
-      --without-http_browser_module \
-      --without-http_upstream_hash_module \
-      --without-http_upstream_ip_hash_module \
-      --without-http_upstream_least_conn_module \
-      --without-http_upstream_random_module \
-      --without-http_upstream_keepalive_module \
-      --without-http_upstream_zone_module \
-      --with-http_gzip_static_module \
-      --add-module=/usr/src/ngx_brotli \
-  ' \
+        --prefix=/etc/nginx \
+        --sbin-path=/usr/sbin/nginx \
+        --modules-path=/usr/lib/nginx/modules \
+        --conf-path=/etc/nginx/nginx.conf \
+        --pid-path=/dev/shm/nginx.pid \
+        --lock-path=/dev/shm/nginx.lock \
+        --http-client-body-temp-path=/dev/shm/client_temp \
+        --http-proxy-temp-path=/dev/shm/proxy_temp \
+        --http-fastcgi-temp-path=/dev/shm/fastcgi_temp \
+        --http-uwsgi-temp-path=/dev/shm/uwsgi_temp \
+        --user=nginx \
+        --group=nginx \
+        --error-log-path=/dev/stderr \
+        --http-log-path=/dev/stdout \
+        --with-threads \
+        --with-file-aio \
+        --with-stream \
+        --without-select_module \
+        --without-poll_module \
+        --without-http_charset_module \
+        --without-http_ssi_module \
+        --without-http_userid_module \
+        --without-http_access_module \
+        --without-http_auth_basic_module \
+        --without-http_mirror_module \
+        --without-http_autoindex_module \
+        --without-http_geo_module \
+        --without-http_map_module \
+        --without-http_split_clients_module \
+        --without-http_referer_module \
+        --without-http_scgi_module \
+        --without-http_memcached_module \
+        --without-http_limit_conn_module \
+        --without-http_limit_req_module \
+        --without-http_empty_gif_module \
+        --without-http_browser_module \
+        --without-http_upstream_hash_module \
+        --without-http_upstream_ip_hash_module \
+        --without-http_upstream_least_conn_module \
+        --without-http_upstream_random_module \
+        --without-http_upstream_keepalive_module \
+        --without-http_upstream_zone_module \
+        --with-http_gzip_static_module \
+        --add-module=/usr/src/ngx_brotli \
+    ' \
   && apk add --no-cache \
-      curl \
-      linux-headers \
-      build-base \
-      pcre-dev \
-      zlib-static \
-      zlib-dev \
-      git \
+    curl \
+    linux-headers \
+    build-base \
+    pcre-dev \
+    zlib-static \
+    zlib-dev \
+    git \
   && curl -fSL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz \
   && mkdir -p /usr/src \
   && tar -zxC /usr/src -f nginx.tar.gz \
@@ -117,21 +117,21 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
   && strip /usr/sbin/nginx*
 
-  # 'Install' upx from image since upx isn't available for aarch64 from Alpine
-  COPY --from=lansible/upx /usr/bin/upx /usr/bin/upx
-  # Minify binaries
-  # without: 1.8M
-  # upx: 809.3K
-  # upx --best: 798.2K
-  # upx --brute: breaks the binary
-  RUN upx --best /usr/sbin/nginx && \
-      upx -t /usr/sbin/nginx
+# 'Install' upx from image since upx isn't available for aarch64 from Alpine
+COPY --from=lansible/upx /usr/bin/upx /usr/bin/upx
+# Minify binaries
+# without: 1.8M
+# upx: 809.3K
+# upx --best: 798.2K
+# upx --brute: breaks the binary
+RUN upx --best /usr/sbin/nginx && \
+    upx -t /usr/sbin/nginx
 
-  # Bring in tzdata so users could set the timezones through the environment
-  # variables
-  RUN apk add --no-cache tzdata \
-  && cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime \
-  && echo "Europe/Amsterdam" >  /etc/timezone
+# Bring in tzdata so users could set the timezones through the environment
+# variables
+RUN apk add --no-cache tzdata \
+    && cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime \
+    && echo "Europe/Amsterdam" >  /etc/timezone
 
 
 #######################################################################################################################
@@ -148,9 +148,9 @@ COPY --from=builder /etc_group /etc/group
 
 # Add the timezone data
 COPY --from=builder \
-  /etc/localtime \
-  /etc/timezone \
-  /etc/
+    /etc/localtime \
+    /etc/timezone \
+    /etc/
 
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /etc/nginx /etc/nginx
