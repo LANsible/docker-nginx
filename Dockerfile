@@ -1,12 +1,13 @@
 #######################################################################################################################
 # Scratch Nginx build
 #######################################################################################################################
-FROM alpine:3.15 as builder
+FROM alpine:3.16 as builder
 
 # See: https://github.com/nginx/nginx/tags
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.21.6 \
-    NGX_BROTLI_VERSION=v1.0.0rc
+ENV NGINX_VERSION=1.23.0 \
+    # master until this is released: https://github.com/google/ngx_brotli/pull/130
+    NGX_BROTLI_VERSION=master
 
 # Add unprivileged user
 RUN echo "nginx:x:101:101:nginx:/:" > /etc_passwd
