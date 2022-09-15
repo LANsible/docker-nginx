@@ -5,7 +5,7 @@ FROM alpine:3.16 as builder
 
 # See: https://github.com/nginx/nginx/tags
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.23.0 \
+ENV NGINX_VERSION=1.23.1 \
     # master until this is released: https://github.com/google/ngx_brotli/pull/130
     NGX_BROTLI_VERSION=master
 
