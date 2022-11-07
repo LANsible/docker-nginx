@@ -1,11 +1,13 @@
 #######################################################################################################################
 # Scratch Nginx build
 #######################################################################################################################
+FROM lansible/upx:latest as upx
+
 FROM alpine:3.16 as builder
 
 # See: https://github.com/nginx/nginx/tags
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.23.1 \
+ENV NGINX_VERSION=1.23.2 \
     # master until this is released: https://github.com/google/ngx_brotli/pull/130
     NGX_BROTLI_VERSION=master
 
@@ -119,7 +121,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   && strip /usr/sbin/nginx*
 
 # 'Install' upx from image since upx isn't available for aarch64 from Alpine
-COPY --from=lansible/upx /usr/bin/upx /usr/bin/upx
+COPY --from=upx /usr/bin/upx /usr/bin/upx
 # Minify binaries
 # without: 1.8M
 # upx: 809.3K
