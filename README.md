@@ -1,8 +1,8 @@
 # Nginx
-[![Build Status](https://gitlab.com/lansible1/docker-nginx/badges/master/pipeline.svg)](https://gitlab.com/lansible1/docker-nginx/pipelines)
+[![Build Status](https://github.com/LANsible/docker-nginx/actions/workflows/docker.yml/badge.svg)](https://github.com/LANsible/docker-nginx/actions/workflows/docker.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/lansible/nginx.svg)](https://hub.docker.com/r/lansible/nginx)
-[![Docker Version](https://img.shields.io/docker/v/lansible/nginx?sort=semver)](https://hub.docker.com/r/lansible/nginx)
-[![Docker Image Size](https://img.shields.io/docker/image-size/lansible/nginx?sort=semver)](https://hub.docker.com/r/lansible/nginx)
+[![Docker Version](https://img.shields.io/docker/v/lansible/nginx.svg?sort=semver)](https://hub.docker.com/r/lansible/nginx)
+[![Docker Size/Layers](https://img.shields.io/docker/image-size/lansible/nginx.svg?sort=semver)](https://hub.docker.com/r/lansible/nginx)
 
 ## Why not use the official container?
 
