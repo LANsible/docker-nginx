@@ -3,11 +3,11 @@
 #######################################################################################################################
 FROM lansible/upx:latest as upx
 
-FROM alpine:3.16 as builder
+FROM alpine:3.17 as builder
 
 # See: https://github.com/nginx/nginx/tags
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.23.2 \
+ENV NGINX_VERSION=1.23.3 \
     # master until this is released: https://github.com/google/ngx_brotli/pull/130
     NGX_BROTLI_VERSION=master
 
@@ -47,7 +47,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   # --without-http_upstream_random_module     disable ngx_http_upstream_random_module
   # --without-http_upstream_keepalive_module  disable ngx_http_upstream_keepalive_module
   # --without-http_upstream_zone_module       disable ngx_http_upstream_zone_module
-  #  --with-http_gzip_static_module           enable ngx_http_gzip_static_module
+  # --with-http_gzip_static_module            enable ngx_http_gzip_static_module
   CONFIG='\
         --prefix=/etc/nginx \
         --sbin-path=/usr/sbin/nginx \
