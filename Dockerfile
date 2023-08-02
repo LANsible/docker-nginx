@@ -1,13 +1,11 @@
 #######################################################################################################################
 # Scratch Nginx build
 #######################################################################################################################
-FROM lansible/upx:latest as upx
-
 FROM alpine:3.18 as builder
 
 # See: https://github.com/nginx/nginx/tags
 # See: https://github.com/google/ngx_brotli/releases
-ENV NGINX_VERSION=1.25.0 \
+ENV NGINX_VERSION=1.25.1 \
     # master until this is released: https://github.com/google/ngx_brotli/pull/130
     NGX_BROTLI_VERSION=master
 
@@ -17,6 +15,11 @@ RUN echo "nginx:x:101:101:nginx:/:" > /etc_passwd
 RUN echo "nginx:x:101:nginx" > /etc_group
 
 # Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
+# Minify binaries with UPX
+# without: 1.8M
+# upx: 809.3K
+# upx --best: 798.2K
+# upx --brute: breaks the binary
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
   # Also does not enable httpv2 since the ingress handles TLS termination
@@ -102,6 +105,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     zlib-static \
     zlib-dev \
     git \
+    upx \
   && curl -fSL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz \
   && mkdir -p /usr/src \
   && tar -zxC /usr/src -f nginx.tar.gz \
@@ -118,17 +122,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   && rm -rf /etc/nginx/html/ \
   && mkdir /etc/nginx/conf.d/ \
   && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
-  && strip /usr/sbin/nginx*
-
-# 'Install' upx from image since upx isn't available for aarch64 from Alpine
-COPY --from=upx /usr/bin/upx /usr/bin/upx
-# Minify binaries
-# without: 1.8M
-# upx: 809.3K
-# upx --best: 798.2K
-# upx --brute: breaks the binary
-RUN upx --best /usr/sbin/nginx && \
-    upx -t /usr/sbin/nginx
+  && strip /usr/sbin/nginx* \
+  && upx --best /usr/sbin/nginx \
+  && upx -t /usr/sbin/nginx
 
 # Bring in tzdata so users could set the timezones through the environment
 # variables
