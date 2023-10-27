@@ -101,6 +101,8 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     curl \
     linux-headers \
     build-base \
+    brotli-dev \
+    brotli-static \
     pcre-dev \
     zlib-static \
     zlib-dev \
